@@ -42,6 +42,8 @@ module.exports.updateUserInfo = (req, res, next) => {
     .catch((error) => {
       if (error instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError('Переданы некорректные данные при обновлении информации о пользователе'));
+      } else if (error.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже зарегистрирован'));
       } else if (error instanceof mongoose.Error.DocumentNotFoundError) {
         next(new NotFoundError('Пользователь с указанным id не найден'));
       } else {
